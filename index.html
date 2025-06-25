@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emotion-Based Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      transition: background-color 0.5s, color 0.5s;
+      font-family: Arial, sans-serif;
+    }
+
+    .calculator {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 15px;
+      background-color: inherit;
+      color: inherit;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    #result {
+      font-size: 2rem;
+      text-align: right;
+      padding: 10px;
+      margin-bottom: 20px;
+      background-color: #ffffff;
+      color: #000;
+      border-radius: 10px;
+      height: 60px;
+      overflow-x: auto;
+    }
+
+    .btn {
+      font-size: 1.5rem;
+    }
+
+    .mood-bar {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .mood-bar button {
+      font-size: 1.8rem;
+      margin: 0 5px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    #mood-quote {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="calculator">
+    <div class="mood-bar">
+      <button aria-label="Happy Mood" onclick="setMood('happy')">😊</button>
+      <button aria-label="Sad Mood" onclick="setMood('sad')">😢</button>
+      <button aria-label="Angry Mood" onclick="setMood('angry')">😠</button>
+      <button aria-label="Reset Mood" onclick="setMood('neutral')">🌀</button>
+    </div>
+    <div id="mood-quote">How are you feeling today?</div>
+
+    <div id="result" title="Calculator Result">0</div>
+
+    <div class="row g-2">
+      <div class="col-3"><button class="btn btn-secondary w-100" onclick="clearResult()">C</button></div>
+      <div class="col-3"><button class="btn btn-secondary w-100" onclick="append('(')">(</button></div>
+      <div class="col-3"><button class="btn btn-secondary w-100" onclick="append(')')">)</button></div>
+      <div class="col-3"><button class="btn btn-danger w-100" onclick="delLast()">DEL</button></div>
+
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('7')">7</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('8')">8</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('9')">9</button></div>
+      <div class="col-3"><button class="btn btn-warning w-100" onclick="append('/')">÷</button></div>
+
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('4')">4</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('5')">5</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('6')">6</button></div>
+      <div class="col-3"><button class="btn btn-warning w-100" onclick="append('*')">×</button></div>
+
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('1')">1</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('2')">2</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('3')">3</button></div>
+      <div class="col-3"><button class="btn btn-warning w-100" onclick="append('-')">−</button></div>
+
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('0')">0</button></div>
+      <div class="col-3"><button class="btn btn-light w-100" onclick="append('.')">.</button></div>
+      <div class="col-3"><button class="btn btn-success w-100" onclick="calculate()">=</button></div>
+      <div class="col-3"><button class="btn btn-warning w-100" onclick="append('+')">+</button></div>
+    </div>
+  </div>
+
+  <script>
+    const result = document.getElementById("result");
+    const moodQuote = document.getElementById("mood-quote");
+
+    function append(val) {
+      if (result.innerText === "0" || result.innerText === "Error") {
+        result.innerText = val;
+      } else {
+        result.innerText += val;
+      }
+    }
+
+    function clearResult() {
+      result.innerText = "0";
+    }
+
+    function delLast() {
+      const text = result.innerText;
+      result.innerText = text.length <= 1 ? "0" : text.slice(0, -1);
+    }
+
+    function calculate() {
+      try {
+        const expression = result.innerText;
+        if (/[\+\-\*\/]$/.test(expression)) {
+          result.innerText = "Error";
+        } else {
+          result.innerText = eval(expression);
+        }
+      } catch {
+        result.innerText = "Error";
+      }
+    }
+
+    function setMood(mood) {
+      const body = document.body;
+      let bg = "", text = "", quote = "";
+
+      if (mood === "happy") {
+        bg = "#fff9c4";
+        text = "#000";
+        quote = "Keep smiling, life is good! 😊";
+      } else if (mood === "sad") {
+        bg = "#c5cae9";
+        text = "#000";
+        quote = "It’s okay to feel sad. Numbers are always here for you. 😢";
+      } else if (mood === "angry") {
+        bg = "#ffccbc";
+        text = "#000";
+        quote = "Take a deep breath. Crunch the numbers, not your mood. 😠";
+      } else if (mood === "neutral") {
+        bg = "#ffffff";
+        text = "#000";
+        quote = "How are you feeling today?";
+      }
+
+      body.style.backgroundColor = bg;
+      body.style.color = text;
+      moodQuote.innerText = quote;
+    }
+
+    // Keyboard support
+    document.addEventListener("keydown", function (e) {
+      const allowed = "0123456789+-*/().";
+      if (allowed.includes(e.key)) {
+        append(e.key);
+      } else if (e.key === "Enter") {
+        calculate();
+      } else if (e.key === "Backspace") {
+        delLast();
+      } else if (e.key === "Escape") {
+        clearResult();
+      }
+    });
+  </script>
+</body>
+
+</html>
